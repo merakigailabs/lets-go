@@ -60,3 +60,43 @@ What we really want to answer is: how can we make any dependency available to ou
 
 
 ## CH3 - Database-driven response
+
+
+ `go mod verify` => verifies that the checksums of the downloaded packages on the machine match the entries in go.sum.
+
+ `go mod download` => this will get an error if there is any mismatch between the packages they are downloading and the checksums in the file.
+
+ To upgrade to the latest available minor or patch release of a package, you can simply run the go get with the -u flag like so : 
+
+ ```
+ go get -u github.com/foo/bar
+ ```
+
+ For specific version 
+ 
+ ```
+ go get -u github.com/foo/bar@v2.0.0
+ ```
+
+ Removing a package 
+
+
+ run 
+ 
+ ```
+ go get github.com/foo/bar@none
+ ```
+
+ or if all refs are gone from project 
+
+ ``` 
+ go mod tidy
+ ```
+
+============
+
+The `sql.Open()` function returns a `sql.DB object`. This isn’t a database connection — it’s a pool of many connections. This is an important difference to understand. Go manages the connections in this pool as needed, automatically opening and closing connections
+to the database via the driver.
+
+
+The connection pool is intended to be long-lived. In a web application it’s normal to initialize the connection pool in your `main()` function and then pass the pool to your handlers. You shouldn’t call `sql.Open()` in a short-lived HTTP handler itself — it would be a waste of memory and network resources.
