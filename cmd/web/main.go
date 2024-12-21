@@ -12,13 +12,6 @@ type config struct {
 	staticDir string
 }
 
-// Define an application struct to hold the application-wide dependencies for the
-// web application. For now we'll only include the structured logger, but we'll
-// add more to this as the build progresses.
-
-// And then in the handlers.go file, we want to update the handler functions so that they
-// become methods against the application struct and use the structured logger that it
-// contains.
 type application struct {
 	logger *slog.Logger
 	cfg    config

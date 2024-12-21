@@ -58,3 +58,5 @@ What we really want to answer is: how can we make any dependency available to ou
 => Inject dependencies into your handlers. It makes your code more explicit, less error prone and easier to unit test than if you use global variables.
 
 
+
+## CH3 - Database-driven response
