@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	// "text/template"
+	"text/template"
 
 	"snippetbox.mergakigai.com/internal/models"
 )
@@ -23,24 +23,25 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	for _, snippet := range snippets {
 		fmt.Fprintf(w, "%+v\n", snippet)
 	}
-	// files := []string{
-	// 	"./ui/html/base.tmpl.html",
-	// 	"./ui/html/partials/nav.tmpl.html",
-	// 	"./ui/html/pages/home.tmpl.html",
-	// }
 
-	// ts, err := template.ParseFiles(files...)
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/home.tmpl.html",
+	}
 
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// 	return
-	// }
+	ts, err := template.ParseFiles(files...)
 
-	// err = ts.ExecuteTemplate(w, "base", nil)
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// 	return
-	// }
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", snippets)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 
 }
 
@@ -51,10 +52,6 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Use the SnippetModel's Get() method to retreive the data for a
-	// specific record based on it's ID. If no matching record is founc,
-	// return a 404 Not Found response.
-
 	snippet, err := app.snippets.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -64,8 +61,25 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	// Write the snippet data as a plain-text HTTP response body.
-	fmt.Fprintf(w, "%+v", snippet)
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+
+	// Parse the template files...
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	// And then execute them. Notice how we are passing in the snippet
+	// data (a models.Snippet struct) as the final parameter?
+	err = ts.ExecuteTemplate(w, "base", snippet)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
