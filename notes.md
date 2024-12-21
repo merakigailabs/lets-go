@@ -51,3 +51,10 @@ ui: user-interface assets used by the application.
 
 For flags defined with flag.Bool(), omitting a value when starting the application is the
 same as writing -flag=true. The following two commands are equivalent:
+
+##### Dependency Injection 
+
+What we really want to answer is: how can we make any dependency available to our handlers? 
+=> Inject dependencies into your handlers. It makes your code more explicit, less error prone and easier to unit test than if you use global variables.
+
+

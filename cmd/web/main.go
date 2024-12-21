@@ -12,6 +12,17 @@ type config struct {
 	staticDir string
 }
 
+// Define an application struct to hold the application-wide dependencies for the
+// web application. For now we'll only include the structured logger, but we'll
+// add more to this as the build progresses.
+
+// And then in the handlers.go file, we want to update the handler functions so that they
+// become methods against the application struct and use the structured logger that it
+// contains.
+type application struct {
+	logger *slog.Logger
+}
+
 func main() {
 
 	// Config from flags
@@ -22,11 +33,15 @@ func main() {
 
 	// Logging
 
-	// Use the slog.New() function to initialize a new structured logger, which
-	// writes to the standard out stream and uses the default settings.
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
 	}))
+
+	// Initialize a new instance of our application struct, containing the
+	// dependencies (for now, just the structured logger).
+	app := &application{
+		logger: logger,
+	}
 
 	// HTTP Handlers
 	mux := http.NewServeMux()
@@ -35,20 +50,17 @@ func main() {
 
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
-	mux.HandleFunc("GET /snippet/create", snippetCreate)
-	mux.HandleFunc("POST /snippet/create", snippetCreatePost)
+	// Swap the route declarations to use the application struct's methods as the
+	// handler functions. (because we defined the methods against the struct in handlers.go)
+	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
+	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
+	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
-	// Use the Info() method to log the starting server message at Info severity
-	// (along with the listen address as an attribute)
 	logger.Info("starting server", "addr", cfg.addr)
 
 	err := http.ListenAndServe(cfg.addr, mux)
 
-	// And we also use the Error() method to log any error message returned by
-	// http.ListenAndServe() at Error severity (with no additional attributes),
-	// and then call os.Exit(1) to terminate the application with exit code 1.
 	logger.Error(err.Error())
 	os.Exit(1)
 }
