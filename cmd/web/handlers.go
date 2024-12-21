@@ -7,8 +7,6 @@ import (
 	"text/template"
 )
 
-// Change the signature of the home handler so it is defined as a method against
-// * application.
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
@@ -21,26 +19,18 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
-		// Because the home handler is now a method against the application
-		// struct it can access its fields, including the structured logger. We'll
-		// use this to create a log entry at Error level containing the error
-		// message, also including the request method and URI as attributes to
-		// assist with debugging.
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err) // Use the serverError() helper.
 		return
 	}
 
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err) // Use the serverError() helper.
+		return
 	}
 
 }
 
-// Change the signature of the snippetView handler so it is defined as a method against
-// * application.
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {
@@ -50,14 +40,10 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
-// Change the signature of the snippetCreate handler so it is defined as a method against
-// * application.
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Display a form for creating a new snippet..."))
 }
 
-// Change the signature of the snippetCreatePost handler so it is defined as a method against
-// * application.
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Save a new snippet..."))
