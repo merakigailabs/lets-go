@@ -21,6 +21,7 @@ type config struct {
 // contains.
 type application struct {
 	logger *slog.Logger
+	cfg    config
 }
 
 func main() {
@@ -32,34 +33,18 @@ func main() {
 	flag.Parse()
 
 	// Logging
-
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
 	}))
 
-	// Initialize a new instance of our application struct, containing the
-	// dependencies (for now, just the structured logger).
 	app := &application{
 		logger: logger,
+		cfg:    cfg,
 	}
-
-	// HTTP Handlers
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir(cfg.staticDir))
-
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
-
-	// Swap the route declarations to use the application struct's methods as the
-	// handler functions. (because we defined the methods against the struct in handlers.go)
-	mux.HandleFunc("GET /{$}", app.home)
-	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
-	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
-	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
 	logger.Info("starting server", "addr", cfg.addr)
 
-	err := http.ListenAndServe(cfg.addr, mux)
+	err := http.ListenAndServe(cfg.addr, app.routes())
 
 	logger.Error(err.Error())
 	os.Exit(1)
