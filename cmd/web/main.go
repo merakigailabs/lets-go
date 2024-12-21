@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"text/template"
 
 	"snippetbox.mergakigai.com/internal/models"
 
@@ -18,12 +19,11 @@ type config struct {
 	dsn       string
 }
 
-// Add a snippets field to the application struct. This will allow us to
-// make the SnippetModel object available to our handlers.
 type application struct {
-	logger   *slog.Logger
-	cfg      config
-	snippets *models.SnippetModel
+	logger        *slog.Logger
+	cfg           config
+	snippets      *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -41,9 +41,6 @@ func main() {
 		AddSource: true,
 	}))
 
-	// To keep the main() function tidy, I've put the code for creating a connection pool
-	// into the separate openDB() function below. We pass openDB() the DSN - Database string name from the cmd line flag
-
 	db, err := openDB(cfg.dsn)
 
 	if err != nil {
@@ -51,16 +48,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	// We also defer a call to db.Close(), so that the connection pool is close,
-	// before the main() function exists.
 	defer db.Close()
 
-	// Initialize a models.SnippetModel instance containing the connection pool
-	// and add it to the application dependencies
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
 	app := &application{
-		logger:   logger,
-		cfg:      cfg,
-		snippets: &models.SnippetModel{DB: db},
+		logger:        logger,
+		cfg:           cfg,
+		snippets:      &models.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	logger.Info("starting server", "addr", cfg.addr)

@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"text/template"
-
 	"snippetbox.mergakigai.com/internal/models"
 )
 
@@ -21,29 +19,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
-	// Create an instance of a templateData struct holding the slice of
-	// snippets.
-	data := templateData{
+	// Use the new render helper.
+	app.render(w, r, http.StatusOK, "home.tmpl.html", templateData{
 		Snippets: snippets,
-	}
-
-	// Pass in the templateData struct when executing the template.
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+	})
 
 }
 
@@ -64,27 +43,10 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
-	}
-
-	// Parse the template files...
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-	// Create an instance of a templateData struct holding the snippet data.
-	data := templateData{
+	// Use the new render helper.
+	app.render(w, r, http.StatusOK, "view.tmpl.html", templateData{
 		Snippet: snippet,
-	}
-	// Pass in the templateData struct when executing the template.
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+	})
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
