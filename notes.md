@@ -33,3 +33,13 @@ there is no right or wrong way to name your handlers in Go
 
 It’s only possible to call w.WriteHeader() once per response, and after the status code
 has been written it can’t be changed.
+
+
+---------
+##### Folder Structure 
+
+cmd : Contains application specific code 
+
+internal : ancillary non-application-specific code used in the project. Reusable code like validation helpers and the SQL database models for the project
+
+ui: user-interface assets used by the application.
