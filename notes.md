@@ -30,3 +30,6 @@ The r.PathValue() method always returns a string value IT IS NOT SANITIZED !
 Be carefull of route precedence , the most specific wins, make your route no there is no overlapping routes.
 
 there is no right or wrong way to name your handlers in Go
+
+It’s only possible to call w.WriteHeader() once per response, and after the status code
+has been written it can’t be changed.
