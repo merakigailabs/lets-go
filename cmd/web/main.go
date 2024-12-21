@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"snippetbox.mergakigai.com/internal/models"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -16,9 +18,12 @@ type config struct {
 	dsn       string
 }
 
+// Add a snippets field to the application struct. This will allow us to
+// make the SnippetModel object available to our handlers.
 type application struct {
-	logger *slog.Logger
-	cfg    config
+	logger   *slog.Logger
+	cfg      config
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -50,9 +55,12 @@ func main() {
 	// before the main() function exists.
 	defer db.Close()
 
+	// Initialize a models.SnippetModel instance containing the connection pool
+	// and add it to the application dependencies
 	app := &application{
-		logger: logger,
-		cfg:    cfg,
+		logger:   logger,
+		cfg:      cfg,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	logger.Info("starting server", "addr", cfg.addr)
