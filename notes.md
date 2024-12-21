@@ -43,3 +43,8 @@ cmd : Contains application specific code
 internal : ancillary non-application-specific code used in the project. Reusable code like validation helpers and the SQL database models for the project
 
 ui: user-interface assets used by the application.
+
+
+
+
+## CH2 - Configuration and error hanfling
