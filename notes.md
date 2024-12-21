@@ -46,5 +46,8 @@ ui: user-interface assets used by the application.
 
 
 
+## CH2 - Configuration and error handling
 
-## CH2 - Configuration and error hanfling
+
+For flags defined with flag.Bool(), omitting a value when starting the application is the
+same as writing -flag=true. The following two commands are equivalent:
