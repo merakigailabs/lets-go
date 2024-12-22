@@ -100,3 +100,11 @@ to the database via the driver.
 
 
 The connection pool is intended to be long-lived. In a web application it’s normal to initialize the connection pool in your `main()` function and then pass the pool to your handlers. You shouldn’t call `sql.Open()` in a short-lived HTTP handler itself — it would be a waste of memory and network resources.
+
+
+
+## TODO : 
+
+Understand middlewares.
+Understand closure.
+Understand pattern for dependence injection
