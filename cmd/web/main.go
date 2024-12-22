@@ -10,6 +10,7 @@ import (
 
 	"snippetbox.mergakigai.com/internal/models"
 
+	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -24,6 +25,7 @@ type application struct {
 	cfg           config
 	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -55,11 +57,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Initialize a decoder instance...
+	formDecoder := form.NewDecoder()
+
+	// And add it to the application dependencies.
 	app := &application{
 		logger:        logger,
 		cfg:           cfg,
 		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   formDecoder,
 	}
 
 	logger.Info("starting server", "addr", cfg.addr)
