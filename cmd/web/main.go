@@ -67,6 +67,12 @@ func main() {
 	sessionManger.Store = mysqlstore.New(db)
 	sessionManger.Lifetime = 12 * time.Hour
 
+	// Make sure that the Secure attibute is set on our session cookies.
+	// Setting this means that the cookie will only be sent by a user's web
+	// browser when a HTTPS connection is being used (and won't be sent over an
+	//  unsecure HTTP connection).
+	sessionManger.Cookie.Secure = true
+
 	app := &application{
 		logger:         logger,
 		cfg:            cfg,
@@ -90,8 +96,10 @@ func main() {
 
 	logger.Info("starting server", "addr", cfg.addr)
 
-	// Call the ListenAndServe() method on our new http.Server struct to start the server.
-	err = srv.ListenAndServe()
+	// Use the ListenAndServeTLS() method to start the HTTPS server. We
+	// pass in the paths to the TLS certificate and corresponding private key as
+	// the two parameters.
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 
 	logger.Error(err.Error())
 	os.Exit(1)
