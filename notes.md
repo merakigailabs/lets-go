@@ -107,4 +107,6 @@ The connection pool is intended to be long-lived. In a web application it’s no
 
 Understand middlewares.
 Understand closure.
-Understand pattern for dependence injection
+Understand pattern for dependence injection.
+Understand defered functions in Go.
+
