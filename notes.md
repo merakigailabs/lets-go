@@ -14,7 +14,7 @@ http.NewServeMux() //  function to initialize a new servemux
 
 ```go
 
-
+// Add a snippetView handler function
 func snippetView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Display a specific snippet ..."))
 }
@@ -110,3 +110,7 @@ Understand closure.
 Understand pattern for dependence injection.
 Understand defered functions in Go.
 
+
+====================
+
+go run /usr/local/go/src/crypto/tls/generate_cert.go --rsa-bits=2048 --host=localhost
