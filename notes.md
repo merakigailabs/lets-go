@@ -14,7 +14,7 @@ http.NewServeMux() //  function to initialize a new servemux
 
 ```go
 
-// Add a snippetView handler function
+
 func snippetView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Display a specific snippet ..."))
 }

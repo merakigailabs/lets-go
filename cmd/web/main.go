@@ -23,7 +23,6 @@ type config struct {
 	dsn       string
 }
 
-// Add a new sessionManager field to the application struct.
 type application struct {
 	logger         *slog.Logger
 	cfg            config
@@ -62,18 +61,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Initialize a decoder instance...
 	formDecoder := form.NewDecoder()
 
-	// Use he scs.New() function to initialze a new session manager. Then we
-	// configure it to use our MySQL database as the session store, and set a
-	// lifetime of 12 hours (so that sessions automaticaaly expire 12 hours)
-	// after first being created).
 	sessionManger := scs.New()
 	sessionManger.Store = mysqlstore.New(db)
 	sessionManger.Lifetime = 12 * time.Hour
 
-	// And add it to the application dependencies.
 	app := &application{
 		logger:         logger,
 		cfg:            cfg,

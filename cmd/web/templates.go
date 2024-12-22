@@ -8,13 +8,12 @@ import (
 	"snippetbox.mergakigai.com/internal/models"
 )
 
-// Add a Form field with the type "any".
 type templateData struct {
 	Snippet     models.Snippet
 	Snippets    []models.Snippet
 	CurrentYear int
 	Form        any
-	Flash       string // Add a Flash field to the templateData struct
+	Flash       string
 }
 
 func humanDate(t time.Time) string {
