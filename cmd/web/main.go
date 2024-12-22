@@ -76,9 +76,17 @@ func main() {
 		sessionManager: sessionManger,
 	}
 
+	// Initialize a new http.Server struct. We set the Addr and Handler fields so
+	// that the server uses the same network address and routes as before.
+	srv := &http.Server{
+		Addr:    cfg.addr,
+		Handler: app.routes(),
+	}
+
 	logger.Info("starting server", "addr", cfg.addr)
 
-	err = http.ListenAndServe(cfg.addr, app.routes())
+	// Call the ListenAndServe() method on our new http.Server struct to start the server.
+	err = srv.ListenAndServe()
 
 	logger.Error(err.Error())
 	os.Exit(1)
