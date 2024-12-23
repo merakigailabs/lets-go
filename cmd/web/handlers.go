@@ -218,8 +218,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
-	// Use the RenewToken() method on the current session to change the session
-	// ID again.
+	// Use the RenewToken() method on the current session to change the session ID again.
 	err := app.sessionManager.RenewToken(r.Context())
 	if err != nil {
 		app.serverError(w, r, err)
