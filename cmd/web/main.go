@@ -69,10 +69,6 @@ func main() {
 	sessionManger.Store = mysqlstore.New(db)
 	sessionManger.Lifetime = 12 * time.Hour
 
-	// Make sure that the Secure attibute is set on our session cookies.
-	// Setting this means that the cookie will only be sent by a user's web
-	// browser when a HTTPS connection is being used (and won't be sent over an
-	//  unsecure HTTP connection).
 	sessionManger.Cookie.Secure = true
 
 	app := &application{
